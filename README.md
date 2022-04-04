@@ -1,2 +1,4 @@
-# wilson_loop_1
-Some test of the Wilson loop for https://github.com/urbach/su2
+# su2_tests
+
+Tests over the ```staggered``` branch of https://github.com/urbach/su2
+
