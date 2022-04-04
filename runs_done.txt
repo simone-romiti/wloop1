@@ -1,0 +1,1 @@
+./data/runs/X16Y16Z1T16/beta1.0_PureGauge_heat1_nmeas2000_nsteps500/
