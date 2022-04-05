@@ -16,7 +16,7 @@ def offline_meas(Lx, Ly, Lz, Lt, beta, mass, heat, nmeas, nsteps):
   ##
   action = "--beta {beta}".format(beta=beta)
   hmc_par = "--nmeas {nmeas} --nsteps {nsteps} --nstep {nsave}".format(
-    heat=heat, nmeas=nmeas, nsteps=nsteps, nsave=50)
+    heat=heat, nmeas=nmeas, nsteps=nsteps, nsave=nsave)
   #
   Wloops = "--Wloops 1"
   cmd = EXE+" "+geometry+" "+action+" "+hmc_par+" "+Wloops+" --confdir "+confdir

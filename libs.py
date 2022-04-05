@@ -7,7 +7,7 @@ import os
 Ndims = 3 # number of spacetime dimensions
 
 g_EXE = "./u1-hmc" # global executable (or symbolic link to it)
-g_nsave = 1 # period of saving configurations
+g_nsave = 10 # period of saving configurations
 g_FLD = "./data/runs/" 
 
 g_runs_done = "./runs_done.txt" # output file of previous successful runs 
