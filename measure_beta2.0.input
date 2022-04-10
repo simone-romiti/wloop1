@@ -9,10 +9,10 @@ geometry:
 
 begin_monomials:
   gauge:
-    beta: 1.0
+    beta: 2.0
 
 begin_measurements:
-  confdir: "./data/runs/X16Y16Z1T16/beta1.0_PureGauge_heat0_nmeas10000_nsteps1000/"
+  confdir: "./data/runs/X16Y16Z1T16/beta2.0_PureGauge_heat0_nmeas10000_nsteps1000/"
   nmeas: 200
   nstep: 50
   Wloop: true
