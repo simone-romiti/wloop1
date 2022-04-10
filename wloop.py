@@ -21,7 +21,9 @@ Nconf_tot = 10000
 Nconf = int((Nconf_tot - Ncut)/Nstep) # configurations actually considered
 N_jkf = 10
 
-DIR_runs = "./data/runs/"
+DIR_data = "./data/"
+DIR_analysis = DIR_data + "analysis/"
+DIR_runs = DIR_data + "runs/"
 DIR_geom = "X16Y16Z1T16/"
 
 def get_DIR_hmc(beta):
@@ -38,6 +40,7 @@ class static_potential:
     self.beta = beta
     self.DIR = DIR_runs + DIR_geom + get_DIR_hmc(self.beta)
     self.LIST_df_Wr = self.get_list_df_conf_Wr() # list of gauge config data frame for W_r(t)
+    self.plateau = pd.read_csv(DIR_analysis+DIR_geom+"plateau.txt", sep=" ", dtype={'beta': str})
   ##
   def get_df_conf_Wr(self, i):
     F = self.DIR+base_FILE+"{:04d}".format(i)+".dat"
@@ -124,20 +127,35 @@ class static_potential:
   def gen_plot_Vr(self):
     self.gen_plot_obs_r(self.get_jkf_Vr, "V_eff")
   ##
-  def fit_V(self, r):
+  def get_fit_V(self, r):
     E = Meff(self.get_jkf_Vr(r))
-    E.fit_to_const(t1=1, t2=4)
-    print(E.get_M0())
-    # self.gen_plot_obs_r(self.get_jkf_Vr, "V_eff")
+    ib = list(self.plateau["beta"]).index(self.beta)
+    t1, t2 = self.plateau.iloc[ib][["t1", "t2"]]
+    E.fit_to_const(t1=t1, t2=t2)
+    return E.get_M0()
   ##
+  def fit_all_V(self, rlist) -> None:
+    nr = len(rlist)
+    V = jkf.matrix(nr, N_jkf)
+    print("Fitting V(r):")
+    for i in range(nr):
+      print("r=", i)
+      V[i] = self.get_fit_V(rlist[i])
+    ##
+    columns = ["j={j}".format(j=j) for j in range(N_jkf)]
+    V.to_DataFrame(columns=columns).to_csv(DIR_analysis+DIR_geom+"/Vr.dat")
+    return None
 ##
 
 beta_list = ["1.0", "1.5", "2.0", "2.5", "3.0"]
 for beta in beta_list:
   print("beta =", beta)
   Si = static_potential(beta)
+  # plots
   Si.gen_plot_Wr("linear")
   Si.gen_plot_Wr("log")
-  Si.fit_V(1)
-
+  Si.gen_plot_Vr()
+  # effective mass fitting
+  Si.fit_all_V([1,2,3])
+##
 

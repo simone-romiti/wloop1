@@ -13,7 +13,7 @@ begin_monomials:
 
 begin_measurements:
   confdir: "./data/runs/X16Y16Z1T16/beta2.5_PureGauge_heat0_nmeas10000_nsteps1000/"
-  nmeas: 200
+  n_meas: 200
   nstep: 50
   Wloop: true
   beta_str_width: 1
