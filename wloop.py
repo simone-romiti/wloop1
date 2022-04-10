@@ -7,9 +7,11 @@ import plotly.graph_objects as go
 
 import os
 import sys
+
 HOME_DIR = os.path.expanduser("~/")
 sys.path.insert(0, HOME_DIR+'Documents/zwiebel/')
 import jkf
+from eff_curve import Meff as Meff
 
 dims = [16,16,1,16]
 Lx, Ly, Lz, Lt = dims
@@ -67,7 +69,7 @@ class static_potential:
     Wr = self.get_jkf_Wr(r)
     return Wr.M_eff_no_bkw()
   ##
-  def add_time_series(self, Fig, y, ey, lbl, tstart=1):
+  def add_time_series(self, Fig, y, ey, lbl, type="linear", tstart=1):
     """ add plot of planar W_r(t) to the Fig """
     #
     x = [i for i in range(tstart, len(y)+1)]
@@ -88,33 +90,54 @@ class static_potential:
     #
     return None
   ##
-  def gen_plot_obs_r(self, fun_Mr, name):
-    """ Generate the plots from the jkf matrix obtained with fun_Mr(r), for all r"""
+  def gen_plot_obs_r(self, fun_Mr, name, type="linear"):
+    """ Generate the plots from the jkf matrix obtained with fun_Mr(r), for all r
+        type = One of the following enumeration values:
+            ['-', 'linear', 'log', 'date', 'category',
+            'multicategory']
+    """
     Fig = go.Figure()
     for r in range(1, Lx):
       y  = fun_Mr(r).ae()["av"]
       ey = fun_Mr(r).ae()["err"] 
       self.add_time_series(Fig, y, ey, "{name}_{r}(t)".format(name=name, r=r))
     ##
+    Fig.update_xaxes(title_text="t")
+    Fig.update_yaxes(title_text=name, type=type)
+    Fig.update_layout()
+    ##
     dir = "./plots/"+DIR_geom+"beta"+beta+"/"
     if not os.path.exists(dir):
       os.makedirs(dir)
     ##
-    Fig.write_html(dir+"{name}.html".format(name=name))
+    outfile = dir+"{name}".format(name=name)
+    if(type !=  "linear"):
+      outfile += "({tp}_plot)".format(tp=type)
+    ##
+    outfile += ".html"
+    Fig.write_html(outfile)
     return
   ##
-  def gen_plot_Wr(self):
-    self.gen_plot_obs_r(self.get_jkf_Wr, "W")
+  def gen_plot_Wr(self, type):
+    self.gen_plot_obs_r(self.get_jkf_Wr, "W", type=type)
   ##
   def gen_plot_Vr(self):
     self.gen_plot_obs_r(self.get_jkf_Vr, "V_eff")
   ##
+  def fit_V(self, r):
+    E = Meff(self.get_jkf_Vr(r))
+    E.fit_to_const(t1=1, t2=4)
+    print(E.get_M0())
+    # self.gen_plot_obs_r(self.get_jkf_Vr, "V_eff")
+  ##
 ##
 
-for beta in ["1.0", "2.0", "3.0"]:
+beta_list = ["1.0", "1.5", "2.0", "2.5", "3.0"]
+for beta in beta_list:
   print("beta =", beta)
   Si = static_potential(beta)
-  Si.gen_plot_Wr()
-  Si.gen_plot_Vr()
+  Si.gen_plot_Wr("linear")
+  Si.gen_plot_Wr("log")
+  Si.fit_V(1)
 
 

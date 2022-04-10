@@ -16,7 +16,7 @@ begin_measurements:
   nmeas: 200
   nstep: 50
   Wloop: true
-  beta_str_width: 0
+  beta_str_width: 1
 #  gradient: false
 #  tmax : 1.0
 ##
