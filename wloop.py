@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
+import matplotlib.pyplot as plt
+
 import os
 import sys
 
@@ -109,7 +111,7 @@ class static_potential:
     Fig.update_yaxes(title_text=name, type=type)
     Fig.update_layout()
     ##
-    dir = "./plots/"+DIR_geom+"beta"+beta+"/"
+    dir = "./plots/"+DIR_geom+"beta"+self.beta+"/"
     if not os.path.exists(dir):
       os.makedirs(dir)
     ##
@@ -144,6 +146,15 @@ class static_potential:
     ##
     columns = ["j={j}".format(j=j) for j in range(N_jkf)]
     V.to_DataFrame(columns=columns).to_csv(DIR_analysis+DIR_geom+"/Vr.dat")
+
+    V.ae().to_csv(DIR_analysis+DIR_geom+"/Vr(ae).dat")
+    plt.title("{X}x{Y}x{Z}x{T} - $\\beta=${beta}".format(X=Lx,Y=Ly,Z=Lz,T=Lt,beta=self.beta))
+    plt.xlabel("r")
+    plt.ylabel("V(r)")    
+    plt.errorbar(x=[r for r in range(1,nr+1)], y=V.ae()["av"], yerr=V.ae()["err"])
+    plt.savefig("./plots/"+DIR_geom+"beta"+beta+"/Vr.pdf")
+    plt.close()
+
     return None
 ##
 
