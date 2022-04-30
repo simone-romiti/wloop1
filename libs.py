@@ -119,8 +119,8 @@ def loop_dims_fixed(dims, Fun, skip_missing_file) -> None:
   for beta in ["1.0", "2.0", "3.0"]:
     for mass in ["-1", "0.100", "0.000", "0.010"]:
       for heat in [1]:
-        for nsteps in [500]:
-          for nmeas in [2000]:
+        for nsteps in [1000]:
+          for nmeas in [10000]:
             dir_file = get_output_dir_hmc(
               Lx=Lx, Ly=Ly, Lz=Lz, Lt=Lt, 
               beta=beta, mass=mass, 
