@@ -116,9 +116,9 @@ def gen_html(Fig, name, dims):
 R_runs_done = [l.strip() for l in open(g_runs_done, "r").readlines()]
 def loop_dims_fixed(dims, Fun, skip_missing_file) -> None:
   Lx, Ly, Lz, Lt = dims
-  for beta in ["1.0", "2.0", "3.0"]:
+  for heat in [0, 1]:
     for mass in ["-1", "0.100", "0.000", "0.010"]:
-      for heat in [1]:
+      for beta in ["1.0", "1.25", "1.5", "1.75", "2.0", "2.25", "2.5", "2.75", "3.0"]:
         for nsteps in [1000]:
           for nmeas in [10000]:
             dir_file = get_output_dir_hmc(

@@ -9,7 +9,7 @@ nsave = libs.g_nsave
 runs_in_progress = libs.g_runs_in_progress # output file of runs in progress 
 open(runs_in_progress, "w+").close() # create file if it doesn't exist
 runs_done = libs.g_runs_done # output file of previous successful runs 
-open(runs_done, "w+").close() # create file if it doesn't exist
+#open(runs_done, "w+").close() # create file if it doesn't exist
 
 g_FLD = libs.g_FLD
 R_done = [r.strip() for r in open(runs_done, "r").readlines()] # list of lines
