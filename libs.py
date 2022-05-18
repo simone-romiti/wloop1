@@ -1,3 +1,4 @@
+from ast import Return
 from io import StringIO
 from sys import path
 import pandas as pd
@@ -22,6 +23,16 @@ def get_outdir_pattern(Lx, Ly, Lz, Lt, beta, mass, heat, nmeas, nsteps):
     outdir += "PureGauge_"
   else:
     outdir += "mass{mass}_".format(mass=mass)
+  ##
+  outdir += "heat{heat}_nmeas{nmeas}_nsteps{nsteps}/".format(heat=heat, nmeas=nmeas, nsteps=nsteps)
+  return outdir
+## 
+
+def get_quenched_confdir_pattern(Lx, Ly, Lz, Lt, beta, heat, nmeas, nsteps):
+  """ Name patterns of the output directory for both runs and data analysis """
+  outdir  = "X{X}Y{Y}Z{Z}T{T}/".format(X=Lx, Y=Ly, Z=Lz, T=Lt)
+  outdir += "beta{beta}_".format(beta=beta)
+  outdir += "PureGauge_"
   ##
   outdir += "heat{heat}_nmeas{nmeas}_nsteps{nsteps}/".format(heat=heat, nmeas=nmeas, nsteps=nsteps)
   return outdir
@@ -84,7 +95,7 @@ def plot_obs(Fig, NAME, F, ncut, Lx, Ly, Lz, Lt, beta, mass, heat, nmeas, nsteps
   x = [float(xi) for xi in df["i"]][ncut:]
   y = [F(float(yi)) for yi in df[NAME]][ncut:]
   #
-  lbl = get_label(beta=beta, heat=heat, nmeas=nmeas, nsteps=nsteps, mass=mass)
+  #lbl = get_label(beta=beta, heat=heat, nmeas=nmeas, nsteps=nsteps, mass=mass)
   # plt.plot(x, y, label=lbl)
   trace_name = ""
   if (mass == "-1"):
@@ -114,13 +125,14 @@ def gen_html(Fig, name, dims):
 
 
 R_runs_done = [l.strip() for l in open(g_runs_done, "r").readlines()]
-def loop_dims_fixed(dims, Fun, skip_missing_file) -> None:
+
+def loop_dims_fixed_lists(dims, Fun, skip_missing_file, L_heat, L_mass, L_beta, L_nsteps, L_nmeas) -> None:
   Lx, Ly, Lz, Lt = dims
-  for heat in [0, 1]:
-    for mass in ["-1", "0.100", "0.000", "0.010"]:
-      for beta in ["1.0", "1.25", "1.5", "1.75", "2.0", "2.25", "2.5", "2.75", "3.0"]:
-        for nsteps in [1000]:
-          for nmeas in [10000]:
+  for heat in L_heat:
+    for mass in L_mass:
+      for beta in L_beta:
+        for nsteps in L_nsteps:
+          for nmeas in L_nmeas:
             dir_file = get_output_dir_hmc(
               Lx=Lx, Ly=Ly, Lz=Lz, Lt=Lt, 
               beta=beta, mass=mass, 
@@ -142,6 +154,18 @@ def loop_dims_fixed(dims, Fun, skip_missing_file) -> None:
 ##
 
 
+def loop_dims_fixed(dims, Fun, skip_missing_file) -> None:
+  loop_dims_fixed_lists(
+    dims, Fun, skip_missing_file, 
+    L_heat = [0, 1],
+    L_mass = ["-1", "0.100", "0.000", "0.010"],
+    L_beta = ["1.0", "1.25", "1.5", "1.75", "2.0", "2.25", "2.5", "2.75", "3.0"],
+    L_nsteps = [1000],
+    L_nmeas = [10000]
+  )
+  return
+##
+
 def loop_1(dims, Fun) -> None:
   loop_dims_fixed(dims, Fun, True)
 ##
@@ -159,7 +183,14 @@ def loop_runs(F_data) -> None:
 def loop_offline(F_data) -> None:
   """ Loop for offline operations on the gauge configurations """
   for dims in List_dims:
-    loop_dims_fixed(dims, F_data, True)
+    loop_dims_fixed_lists(
+      dims, F_data, True, 
+      L_heat = [0, 1],
+      L_mass = ["-1"],
+      L_beta=["1.0", "1.25", "1.5", "1.75", "2.0", "2.25", "2.5", "2.75", "3.0"],
+      L_nsteps=[1000],
+      L_nmeas= [10000]
+    )
   ##
   return None
 ##

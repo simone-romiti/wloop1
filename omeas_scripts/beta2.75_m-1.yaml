@@ -1,0 +1,17 @@
+geometry:
+  T: 16
+  X: 16
+  Y: 16
+  Z: 1
+  ndims: 3
+measurements:
+  Wloop: true
+  beta_str_width: 5
+  conf_dir: ./data/runs/X16Y16Z1T16/beta2.75_PureGauge_heat0_nmeas10000_nsteps1000/
+  n_meas: 10000
+  nstep: 1000
+  pion_staggered:
+    mass: '-1'
+monomials:
+  gauge:
+    beta: '2.75'
