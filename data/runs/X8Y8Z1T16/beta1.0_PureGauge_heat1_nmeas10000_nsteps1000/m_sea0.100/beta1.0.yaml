@@ -1,0 +1,19 @@
+geometry:
+  T: 16
+  X: 8
+  Y: 8
+  Z: 1
+  ndims: 3
+hmc:
+  heat: 1
+  n_meas: 10000
+  n_save: 100
+  n_steps: 1000
+monomials:
+  gauge:
+    beta: 1.0
+omeas:
+  Wloop: true
+  conf_dir: ./data/runs/X8Y8Z1T16/beta1.0_PureGauge_heat1_nmeas10000_nsteps1000/
+  pion_staggered:
+    mass: '0.100'

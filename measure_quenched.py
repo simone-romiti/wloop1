@@ -1,4 +1,4 @@
-# runs.py
+# measure_quenched.py
 
 import os
 #from threading import get_native_id
@@ -35,19 +35,20 @@ def generate_yaml(Lx, Ly, Lz, Lt, beta, mass, heat, nmeas, nsteps):
   nd1 = {"geometry": geometry, "monomials": monomials, "measurements": measurements}
   dmp1 = yaml.dump(nd1)
   #
-  scr_path = g_omeas_scripts_dir + '/beta{beta}_chiral.yaml'.format(beta=beta)
-  with open(scr_path, 'w') as f:
+  yaml_path = g_omeas_scripts_dir + '/beta{beta}_chiral.yaml'.format(beta=beta)
+  with open(yaml_path, 'w') as f:
     f.write(dmp1)
   ##
-  return scr_path
+  return yaml_path
 ##
 
 
 def offline_meas(Lx, Ly, Lz, Lt, beta, mass, heat, nmeas, nsteps):
-  scr_path = generate_yaml(Lx, Ly, Lz, Lt, beta, 0.1, heat, nmeas, nsteps)
+  yaml_path = generate_yaml(Lx, Ly, Lz, Lt, beta, 0.1, heat, nmeas, nsteps)
   scr_log = g_omeas_scripts_dir + '/beta{beta}_0.1.log'.format(beta=beta)
-  cmd = EXE+" -f "+scr_path
+  cmd = EXE+" -f "+yaml_path
   print("running: ", cmd)
+  print("input: ", yaml_path)
   stream = os.popen(cmd)
   s = stream.read()
   with open(scr_log, 'w') as f:

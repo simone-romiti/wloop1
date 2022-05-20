@@ -1,6 +1,9 @@
 # runs.py
 
+from email import message
 import os
+import yaml
+
 import libs
 
 EXE = libs.g_EXE 
@@ -20,29 +23,64 @@ open(runs_done+".bkp", "w").write(str_runs_done) # saving a backup copy
 # open(runs_done, "w").write("") # erasing content
 FILE_done = open(runs_done, "a") # append mode
 
-def gen_run(Lx, Ly, Lz, Lt, beta, mass, heat, nmeas, nsteps):
-  geometry = "-X {X} -Y {Y} -Z {Z} -T {T} --ndims {ndims}".format(
-    X=Lx, Y=Ly, Z=Lz, T=Lt, ndims=3)
-  action  = ""
-  outdir  = g_FLD + libs.get_outdir_pattern(Lx=Lx, Ly=Ly, Lz=Lz, Lt=Lt, beta=beta, mass=mass, heat=heat, nmeas=nmeas, nsteps=nsteps)
-  if(mass=="-1"):
-    action = "--beta {beta} --no_fermions 1".format(beta=beta)
-  else:
-    action = "--beta {beta} --mass {mass}".format(beta=beta, mass=mass)
-  ##
-  hmc_par = "--heat {heat} --nmeas {nmeas} --nsteps {nsteps} --nsave {nsave}".format(
-    heat=heat, nmeas=nmeas, nsteps=nsteps, nsave=nsave)
+g_nsave = 100
+g_icounter_omeas = 0#libs.n_thermalize
+g_nstep_omeas = 100
+
+def get_yaml(Lx, Ly, Lz, Lt, beta, m_sea, m_val, heat, nmeas, nsteps):
+  geometry = {"X": Lx, "Y": Ly, "Z": Lz, "T": Lt, "ndims": libs.Ndims}
+  monomials = {"gauge":{"beta": float(beta)}}
   #
-  if outdir in R_done:
+  outdir = g_FLD + libs.get_quenched_confdir_pattern(
+    Lx=Lx, Ly=Ly, Lz=Lz, Lt=Lt, 
+    beta=beta, 
+    heat=heat, nmeas=nmeas, nsteps=nsteps
+    )
+  #
+  hmc = {"heat": bool(heat), "n_meas": nmeas, "n_save": g_nsave, "conf_dir": outdir}
+  integrator = {"n_steps": nsteps}
+  #
+  omeas = {
+    "verbosity": 1,
+    "icounter": g_icounter_omeas,
+    "nstep": g_nstep_omeas,
+    "Wloop": True,
+    "pion_staggered": {"mass": float(m_val) }
+    }
+  #
+  nd1 = {"geometry": geometry, "monomials": monomials, "hmc": hmc, "integrator": integrator, "omeas": omeas}
+  dmp1 = yaml.dump(nd1)
+  #
+  yaml_dir = outdir
+  if(float(m_sea)<0):
+    yaml_dir += '/quenched/'
+  else:
+    yaml_dir += '/m_sea{m_sea}/'.format(m_sea=m_sea)
+  ##
+  if not os.path.exists(yaml_dir):
+    os.makedirs(yaml_dir)
+  ##
+  yaml_path = yaml_dir+'m_val{m_val}.yaml'.format(m_val=m_val)
+  of = open(yaml_path, 'w') 
+  of.write(dmp1)
+  ##
+  return yaml_path
+##
+
+
+def gen_run(Lx, Ly, Lz, Lt, beta, m_sea, m_val, heat, nmeas, nsteps):
+  yaml_input = get_yaml(Lx, Ly, Lz, Lt, beta, m_sea, m_val, heat, nmeas, nsteps)
+  if yaml_input in R_done:
     return
   else:
-    print("Output: ", outdir)
+    print("Output: ", yaml_input)
     #
-    cmd = EXE+" "+geometry+" "+action+" "+hmc_par+" "+"--outdir"+" "+outdir
+    cmd = EXE+" -f "+yaml_input
     stream = os.popen(cmd)
     s = stream.read()
+#    open('run.log', "w").write(s)
     #
-    FILE_done.write(outdir+"\n")
+    FILE_done.write(yaml_input+"\n")
     FILE_done.flush()
     return
 ##
