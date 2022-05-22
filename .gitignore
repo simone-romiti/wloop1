@@ -1,4 +1,9 @@
+# temporary files
+*~
+
+# binary files
 *.html
 *.pdf
 
+# python cache
 *__pycache__
