@@ -48,15 +48,16 @@ def get_yaml(Lx, Ly, Lz, Lt, beta, m_sea, m_val, heat, nmeas, nsteps):
     "pion_staggered": {"mass": float(m_val) }
     }
   #
-  nd1 = {"geometry": geometry, "monomials": monomials, "hmc": hmc, "integrator": integrator, "omeas": omeas}
-  dmp1 = yaml.dump(nd1)
+  nd1 = {
+    "geometry": geometry, 
+    "monomials": monomials, 
+    "hmc": hmc, "integrator": integrator, 
+    "omeas": omeas
+    }
+  dmp1 = yaml.dump(nd1, default_flow_style=False)
   #
   yaml_dir = outdir
-  if(float(m_sea)<0):
-    yaml_dir += '/quenched/'
-  else:
-    yaml_dir += '/m_sea{m_sea}/'.format(m_sea=m_sea)
-  ##
+  #
   if not os.path.exists(yaml_dir):
     os.makedirs(yaml_dir)
   ##

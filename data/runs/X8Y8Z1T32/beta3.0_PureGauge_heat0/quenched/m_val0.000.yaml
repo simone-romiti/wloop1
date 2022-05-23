@@ -1,0 +1,23 @@
+geometry:
+  T: 32
+  X: 8
+  Y: 8
+  Z: 1
+  ndims: 3
+hmc:
+  conf_dir: ./
+  restart: true
+  n_meas: 1000000 # very large number
+  n_save: 100
+integrator:
+  n_steps: 1000
+monomials:
+  gauge:
+    beta: 3.0
+omeas:
+  Wloop: true
+  icounter: 0
+  nstep: 100
+  pion_staggered:
+    mass: 0.0
+  verbosity: 1

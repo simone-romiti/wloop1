@@ -33,7 +33,7 @@ def get_quenched_confdir_pattern(Lx, Ly, Lz, Lt, beta, heat, nmeas, nsteps):
   outdir += "beta{beta}_".format(beta=beta)
   outdir += "PureGauge_"
   ##
-  outdir += "heat{heat}_nmeas{nmeas}_nsteps{nsteps}/".format(heat=heat, nmeas=nmeas, nsteps=nsteps)
+  outdir += "heat{heat}/quenched/".format(heat=heat)
   return outdir
 ## 
 
@@ -173,7 +173,7 @@ def loop_1(dims, Fun) -> None:
 ##
 
 
-List_dims = [[8,8,1,16]]
+List_dims = [[8,8,1,32]]
 
 def loop_runs(F_data) -> None:
   for dims in List_dims:
