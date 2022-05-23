@@ -1,0 +1,12 @@
+geometry: {T: 16, X: 8, Y: 8, Z: 1, ndims: 3}
+hmc: {conf_dir: ./data/runs/X8Y8Z1T16/beta2.25_PureGauge_heat0_nmeas20500_nsteps1000/,
+  heat: false, n_meas: 20500, n_save: 100}
+integrator: {n_steps: 1000}
+monomials:
+  gauge: {beta: 2.25}
+omeas:
+  Wloop: true
+  icounter: 0
+  nstep: 100
+  pion_staggered: {mass: 0.01}
+  verbosity: 1
