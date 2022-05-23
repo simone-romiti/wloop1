@@ -9,6 +9,7 @@ hmc:
   restart: true
   n_meas: 1000000 # very large number
   n_save: 100
+  lenghty_conf_name: false
 integrator:
   n_steps: 1000
 monomials:
